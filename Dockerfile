@@ -12,7 +12,3 @@ RUN /image_build/setup.sh
 USER 1001
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-
-#CMD ["/sbin/my_init"]
-
-

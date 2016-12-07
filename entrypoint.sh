@@ -6,9 +6,8 @@ USER_ID=$(id -u)
 GROUP_ID=$(id -g)
 
 SETUP_DIR_SBIN=/usr/local/sbin
+SETUP_DIR_BIN=/usr/local/bin
 
-# Sort of irrelevant, but maybe this helps
-umask 002
 
 if [ x"$USER_ID" != x"0" -a x"$USER_ID" != x"1001" ]; then
 
@@ -23,10 +22,11 @@ if [ x"$USER_ID" != x"0" -a x"$USER_ID" != x"1001" ]; then
     export LD_PRELOAD=libnss_wrapper.so
 fi
 
-# If no arguments are given to run, then start runit
-#if [ -z "$@" ]; then
-#    exec /tini -- "/usr/local/sbin/runsvdir-start"
-#fi
+# If no arguments are given to run, then start our little init script
+# to kick off nginx and uwsgi
+if [ -z "$@" ]; then
+    exec $SETUP_DIR_SBIN/tini -- "$SETUP_DIR_BIN/init.sh"
+fi
 
-# Otherwise run the argument (e.g. "bash")
+# Otherwise run the argument given on the docker command line (e.g. "bash")
 exec $SETUP_DIR_SBIN/tini -- "$@"
